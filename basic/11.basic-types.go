@@ -22,6 +22,12 @@ import (
 	float32 float64
 
 	complex64 complex128
+
+zero value
+- 명시적인 초기값 없이 선언된 변수는 zero value가 주어진다.
+- 숫자 -> 0
+- bool -> false
+- string -> ""(빈 문자열)
 */
 
 var (
