@@ -5,6 +5,7 @@ import "fmt"
 func adder() func(int) int {
 	sum := 0
 	return func(x int) int {
+		// 클로저는 함수의 외부로부터 오는 변수를 참조하는 함수
 		sum += x
 		return sum
 	}
