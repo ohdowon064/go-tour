@@ -21,5 +21,8 @@ func main() {
 
 	x, y := <-c, <-c // channel c로부터 값을 받는다.
 
+	go func() { c <- 5 }()
+	fmt.Println(<-c)
+
 	fmt.Println(x, y, x+y)
 }
