@@ -20,11 +20,13 @@ func main() {
 	quit := make(chan int)
 
 	go func() {
+		fmt.Println("run!")
 		for i := 0; i < 10; i++ {
 			fmt.Println(<-c)
 		}
 		quit <- 0
 	}()
 
+	fmt.Println("start!")
 	fibonacci2(c, quit)
 }
