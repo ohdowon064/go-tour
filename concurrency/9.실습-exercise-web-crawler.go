@@ -6,7 +6,11 @@ type Fetcher interface {
 	Fetch(url string) (body string, urls []string, err error)
 }
 
-func Crawl(url string, depth int, fetcher Fetcher) {
+func Crawl(url string, depth int, fetcher Fetcher, visited map[string]bool) {
+	if visited[url] {
+		return
+	}
+
 	if depth <= 0 {
 		return
 	}
@@ -17,15 +21,18 @@ func Crawl(url string, depth int, fetcher Fetcher) {
 		return
 	}
 
+	visited[url] = true
+
 	fmt.Printf("found: %s %q\n", url, body)
 	for _, u := range urls {
-		Crawl(u, depth-1, fetcher)
+		Crawl(u, depth-1, fetcher, visited)
 	}
 	return
 }
 
 func main() {
-	Crawl("https://golang.org/", 4, fetcher)
+	visited := make(map[string]bool)
+	Crawl("https://golang.org/", 4, fetcher, visited)
 }
 
 type fakeFetcher map[string]*fakeResult
