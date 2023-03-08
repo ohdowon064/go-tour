@@ -6,10 +6,10 @@ import (
 )
 
 func Walk(t *tree.Tree, ch chan int) {
-	ch <- t.Value
 	if t.Left != nil {
 		Walk(t.Left, ch)
 	}
+	ch <- t.Value
 	if t.Right != nil {
 		Walk(t.Right, ch)
 	}
@@ -23,9 +23,7 @@ func Same(t1, t2 *tree.Tree) bool {
 	go Walk(t2, ch2)
 
 	for i := 0; i < 10; i++ {
-		a, b := <-ch1, <-ch2
-		fmt.Println(a, b)
-		if a != b {
+		if <-ch1 != <-ch2 {
 			return false
 		}
 	}
