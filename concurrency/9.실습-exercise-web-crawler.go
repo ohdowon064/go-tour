@@ -1,12 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type Fetcher interface {
 	Fetch(url string) (body string, urls []string, err error)
 }
 
-func Crawl(url string, depth int, fetcher Fetcher, visited map[string]bool) {
+func Crawl(url string, depth int, fetcher Fetcher, mu *sync.Mutex, ch chan string) {
 	if visited[url] {
 		return
 	}
@@ -21,19 +24,26 @@ func Crawl(url string, depth int, fetcher Fetcher, visited map[string]bool) {
 		return
 	}
 
+	mu.Lock()
 	visited[url] = true
+	mu.Unlock()
 
-	fmt.Printf("found: %s %q\n", url, body)
+	ch <- fmt.Sprintf("found: %s %q\n", url, body)
 	for _, u := range urls {
-		Crawl(u, depth-1, fetcher, visited)
+		go Crawl(u, depth-1, fetcher, mu, ch)
 	}
 	return
 }
 
 func main() {
-	visited := make(map[string]bool)
-	Crawl("https://golang.org/", 4, fetcher, visited)
+	ch := make(chan string)
+	go Crawl("https://golang.org/", 4, fetcher, &sync.Mutex{}, ch)
+	for result := range ch {
+		fmt.Println(result)
+	}
 }
+
+var visited = make(map[string]bool)
 
 type fakeFetcher map[string]*fakeResult
 
