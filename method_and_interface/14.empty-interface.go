@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	var i interface{} // _empty_interface_: 모든 타입의 값(최소 0개의 메서드를 구현한 타입)
+	var i interface{} // empty interface: 모든 타입의 값(최소 0개의 메서드를 구현한 타입)
 	describe14(i)
 
 	i = 42
